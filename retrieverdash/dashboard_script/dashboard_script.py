@@ -1,19 +1,25 @@
-import os
 import json
-from filelock import FileLock
+import os
 from multiprocessing import Pool
 
+from filelock import FileLock
 from retriever import datasets
-from status_dashboard_tools import (get_dataset_md5, diff_generator,
-                                    create_dirs, dataset_to_csv)
+
+from status_dashboard_tools import (
+    get_dataset_md5,
+    diff_generator,
+    create_dirs,
+    dataset_to_csv)
 
 file_location = os.path.dirname(os.path.realpath(__file__))
+
 example_datasets = ['airports', 'gdp', 'portal', 'bird-size',
                     'aquatic-animal-excretion', 'prism-climate']
+
 try:
     dataset_detail = json.load(open('dataset_details.json', 'r'))
 except IOError:
-    with open("dataset_details.json",'w') as json_file:
+    with open("dataset_details.json", 'w') as json_file:
         dataset_detail = dict()
         json.dump(dataset_detail, json_file)
 
@@ -24,8 +30,8 @@ def check_dataset(dataset):
     status = None
     try:
         md5 = get_dataset_md5(dataset)
-        if (dataset.name not in dataset_detail
-            or md5 != dataset_detail[dataset.name]['md5']):
+        if dataset.name not in dataset_detail or md5 != dataset_detail[
+                dataset.name]['md5']:
             os.chdir(os.path.join(file_location, 'current'))
             dataset_to_csv(dataset)
             diff_generator(dataset)
