@@ -33,18 +33,23 @@ def get_dataset_md5(dataset, use_cache=False, debug=True):
     ...
     683c8adfe780607ac31f58926cf1d326
     """
-    db_name = '{}_sqlite.db'.format(dataset.name.replace('-', '_'))
-    workdir = mkdtemp(dir=file_location)
-    os.chdir(workdir)
-    install_sqlite(dataset.name, use_cache=use_cache,
-                   file=os.path.join(file_location, db_name),
-                   debug=debug)
-    engine_obj = dataset.checkengine(sqlite_engine)
-    engine_obj.to_csv()
-    current_md5 = getmd5(os.getcwd(), data_type='dir')
-    os.chdir(file_location)
-    os.remove(db_name)
-    rmtree(workdir)
+    try:
+        db_name = '{}_sqlite.db'.format(dataset.name.replace('-', '_'))
+        workdir = mkdtemp(dir=file_location)
+        os.chdir(workdir)
+        install_sqlite(dataset.name, use_cache=use_cache,
+                       file=os.path.join(file_location, db_name),
+                       debug=debug)
+        engine_obj = dataset.checkengine(sqlite_engine)
+        engine_obj.to_csv()
+        current_md5 = getmd5(os.getcwd(), data_type='dir')
+    except Exception:
+        raise
+    finally:
+        os.chdir(file_location)
+        if os.path.isfile(db_name):
+            os.remove(db_name)
+        rmtree(workdir)
     return current_md5
 
 
@@ -98,12 +103,16 @@ def dataset_to_csv(dataset):
     Creates a temporary database and converts
     tables of a particular dataset to csv.
     """
-    db_name = '{}_sqlite.db'.format(dataset.name.replace('-', '_'))
-    install_sqlite(dataset.name, use_cache=False,
-                   file=os.path.join(file_location, db_name))
-    engine_obj = dataset.checkengine(sqlite_engine)
-    engine_obj.to_csv(sort=False)
-    os.remove(os.path.join(file_location, db_name))
+    try:
+        db_name = '{}_sqlite.db'.format(dataset.name.replace('-', '_'))
+        install_sqlite(dataset.name, use_cache=False,
+                       file=os.path.join(file_location, db_name))
+        engine_obj = dataset.checkengine(sqlite_engine)
+        engine_obj.to_csv(sort=False)
+    except Exception:
+        raise
+    finally:
+        os.remove(os.path.join(file_location, db_name))
 
 
 def diff_generator(dataset):
