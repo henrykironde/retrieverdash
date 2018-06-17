@@ -133,6 +133,7 @@ def diff_generator(dataset):
     Generates the diff and moves file from
     current directory to old directory.
     """
+    tables = {}
     for keys in dataset.tables:
         file_name = '{}_{}'.format(dataset.name.replace('-', '_'), keys)
         csv_file_name = '{}.csv'.format(file_name)
@@ -141,9 +142,11 @@ def diff_generator(dataset):
                     os.path.join(file_location, 'current', csv_file_name),
                     os.path.join(file_location, 'diffs', html_file_name),
                     context=True, numlines=1)
+        tables[keys] = html_file_name
         move(os.path.join(file_location, 'current', csv_file_name),
              os.path.join(file_location, 'old', csv_file_name))
         os.chdir(os.path.join(file_location))
+    return tables
 
 
 def create_json(path="dataset_details.json"):
