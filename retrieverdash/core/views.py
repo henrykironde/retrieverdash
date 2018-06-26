@@ -1,16 +1,14 @@
+import json
+import os
+
 from django.http import HttpResponse
-from django.views import View
 from django.shortcuts import render
+from django.views import View
 
 from retrieverdash.settings.common import PROJECT_ROOT
 
-import os
-import json
-
-file_path = os.path.join(PROJECT_ROOT,
-                         'dashboard_script/dataset_details.json')
-diff_path = os.path.join(PROJECT_ROOT,
-                         'dashboard_script/diffs/')
+file_path = os.path.join(PROJECT_ROOT, 'dashboard_script/dataset_details.json')
+diff_path = os.path.join(PROJECT_ROOT, 'dashboard_script/diffs/')
 
 
 class DashboardView(View):
@@ -21,6 +19,7 @@ class DashboardView(View):
         return render(request, self.template_name,
                       context={'datasets': dataset_detail,
                                'diff_path': diff_path})
+
 
 class DiffView(View):
     def get(self, request, filename):

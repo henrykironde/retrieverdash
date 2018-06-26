@@ -5,10 +5,10 @@ from multiprocessing import Pool
 from filelock import FileLock
 from retriever import datasets
 
-from status_dashboard_tools import get_dataset_md5
-from status_dashboard_tools import diff_generator
-from status_dashboard_tools import create_dirs
-from status_dashboard_tools import dataset_to_csv
+from .status_dashboard_tools import get_dataset_md5
+from .status_dashboard_tools import diff_generator
+from .status_dashboard_tools import create_dirs
+from .status_dashboard_tools import dataset_to_csv
 
 file_location = os.path.dirname(os.path.realpath(__file__))
 
